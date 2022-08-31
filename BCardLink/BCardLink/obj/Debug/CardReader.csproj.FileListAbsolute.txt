@@ -1,0 +1,15 @@
+C:\Users\DELL\source\repos\BCardLink\BCardLink\bin\Debug\BCardLink.exe.config
+C:\Users\DELL\source\repos\BCardLink\BCardLink\bin\Debug\BCardLink.exe
+C:\Users\DELL\source\repos\BCardLink\BCardLink\bin\Debug\BCardLink.pdb
+C:\Users\DELL\source\repos\BCardLink\BCardLink\bin\Debug\MiFare.dll
+C:\Users\DELL\source\repos\BCardLink\BCardLink\bin\Debug\MiFare.pdb
+C:\Users\DELL\source\repos\BCardLink\BCardLink\bin\Debug\MiFare.xml
+C:\Users\DELL\source\repos\BCardLink\BCardLink\obj\Debug\CardReader.csproj.AssemblyReference.cache
+C:\Users\DELL\source\repos\BCardLink\BCardLink\obj\Debug\CardReader.csproj.SuggestedBindingRedirects.cache
+C:\Users\DELL\source\repos\BCardLink\BCardLink\obj\Debug\BCardLink.Main.resources
+C:\Users\DELL\source\repos\BCardLink\BCardLink\obj\Debug\BCardLink.Properties.Resources.resources
+C:\Users\DELL\source\repos\BCardLink\BCardLink\obj\Debug\CardReader.csproj.GenerateResource.cache
+C:\Users\DELL\source\repos\BCardLink\BCardLink\obj\Debug\CardReader.csproj.CoreCompileInputs.cache
+C:\Users\DELL\source\repos\BCardLink\BCardLink\obj\Debug\CardReader.csproj.CopyComplete
+C:\Users\DELL\source\repos\BCardLink\BCardLink\obj\Debug\BCardLink.exe
+C:\Users\DELL\source\repos\BCardLink\BCardLink\obj\Debug\BCardLink.pdb

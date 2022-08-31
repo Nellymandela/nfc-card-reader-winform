@@ -1,0 +1,808 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MiFare</name>
+    </assembly>
+    <members>
+        <member name="T:MiFare.Classic.AccessBits">
+            <summary>
+                Internal class for encoding/decoding the 4 control bytes in the trailer datablock of each sector
+            </summary>
+        </member>
+        <member name="M:MiFare.Classic.AccessBits.CalculateAccessBits(MiFare.Classic.AccessConditions)">
+            <summary>
+                Calculate the 4 control bytes in the trailer datablock of each sector according to the given AccessConditions
+            </summary>
+            <param name="access">AccessConditions to encode</param>
+            <returns>a 4-bytes array</returns>
+        </member>
+        <member name="M:MiFare.Classic.AccessBits.GetAccessConditions(System.Byte[])">
+            <summary>
+                Decode the 4 access control bytes
+            </summary>
+            <param name="data">a 4-bytes array to decode</param>
+            <returns>an initialized AccessConditions object</returns>
+        </member>
+        <member name="M:MiFare.Classic.AccessBits.PrintValues(System.Collections.BitArray,System.Int32)">
+            <summary>
+                Helper function for debug
+            </summary>
+            <param name="ba"></param>
+            <param name="myWidth"></param>
+        </member>
+        <member name="T:MiFare.Classic.AccessConditions">
+            <summary>
+                Class that handles the access conditions to a given sector of the card
+            </summary>
+        </member>
+        <member name="T:MiFare.Classic.AccessConditions.MADVersionEnum">
+            <summary>
+                Version of the MAD supported by the card. The MAD version is written only in the trailer datablock of sector 0.
+                For all other sector, this value has no meaning
+            </summary>
+        </member>
+        <member name="F:MiFare.Classic.AccessConditions.DataAreas">
+            <summary>
+                Access conditions for each data area. This array has always 3 elements
+            </summary>
+        </member>
+        <member name="F:MiFare.Classic.AccessConditions.MultiApplicationCard">
+            <summary>
+                True if the card supports multiple applications
+            </summary>
+        </member>
+        <member name="F:MiFare.Classic.AccessConditions.Trailer">
+            <summary>
+                Access conditions for the trailer datablock
+            </summary>
+        </member>
+        <member name="T:MiFare.Classic.DataAreaAccessCondition">
+            <summary>
+                Handle access condition for a generic datablock of a sector
+            </summary>
+        </member>
+        <member name="T:MiFare.Classic.DataAreaAccessCondition.ConditionEnum">
+            <summary>
+                List of access conditions that may apply to each operation (read, write, inc, dec)
+            </summary>
+        </member>
+        <member name="F:MiFare.Classic.DataAreaAccessCondition._Templates">
+            <summary>
+                Dictionary that associate an AccessConditionsSet to a bit array of C1-C2-C3 bits
+                (see MiFare specs for the meaning of C1-C2-C3)
+            </summary>
+        </member>
+        <member name="P:MiFare.Classic.DataAreaAccessCondition.Decrement">
+            Access condition for decrement operations on the data block
+        </member>
+        <member name="P:MiFare.Classic.DataAreaAccessCondition.Increment">
+            Access condition for increment operations on the data block
+        </member>
+        <member name="P:MiFare.Classic.DataAreaAccessCondition.Read">
+            <summary>
+                Access condition for read operations on the data block
+            </summary>
+        </member>
+        <member name="P:MiFare.Classic.DataAreaAccessCondition.Write">
+            <summary>
+                Access condition for write operations on the data block
+            </summary>
+        </member>
+        <member name="M:MiFare.Classic.DataAreaAccessCondition.GetBits">
+            <summary>
+                convert the object to the corresponding C1-C2-C3 bits
+            </summary>
+            <returns>a 3-elements bit array</returns>
+        </member>
+        <member name="M:MiFare.Classic.DataAreaAccessCondition.Initialize(MiFare.Classic.DataAreaAccessCondition)">
+            <summary>
+                Initialize the object based on a DataAreaAccessCondition
+            </summary>
+            <param name="access">the DataAreaAccessCondition to clone</param>
+        </member>
+        <member name="M:MiFare.Classic.DataAreaAccessCondition.Initialize(System.Collections.BitArray)">
+            <summary>
+                Initialize object based on a bit array of C1-C2-C3
+            </summary>
+            <param name="bits">C1-C2-C3 bit array</param>
+            <returns></returns>
+        </member>
+        <member name="T:MiFare.Classic.DataBlock">
+            <summary>
+                Class that handles the datablocks in a sector
+            </summary>
+        </member>
+        <member name="M:MiFare.Classic.Extensions.ByteArrayToString(System.Byte[])">
+            <summary>
+            Returns a string from a byte array 
+            </summary>
+            <param name="ba"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MiFare.Classic.Extensions.StringToByteArray(System.String)">
+            <summary>
+            Converts a hex string into bytes
+            </summary>
+            <param name="hex"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MiFare.Classic.InternalKeyType">
+            <summary>
+            Key to use to login into the sector
+            </summary>
+        </member>
+        <member name="T:MiFare.Classic.ICardReader">
+            <summary>
+            interface for a generic card reader
+            </summary>
+        </member>
+        <member name="M:MiFare.Classic.ICardReader.GetCardInfo">
+            <summary>
+            Gets the name of the current detected card
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MiFare.Classic.ICardReader.AddOrUpdateSectorKeySet(MiFare.Classic.SectorKeySet)">
+            <summary>
+            Add or Update a key for a sector
+            </summary>
+            <param name="keySet"></param>
+        </member>
+        <member name="M:MiFare.Classic.ICardReader.Login(System.Int32,MiFare.Classic.InternalKeyType)">
+            <summary>
+            Login into the given sector using the given key
+            </summary>
+            <param name="sector">sector to login into</param>
+            <param name="key">key to use</param>
+            <returns>tru on success, false otherwise</returns>
+        </member>
+        <member name="M:MiFare.Classic.ICardReader.Read(System.Int32,System.Int32)">
+            <summary>
+            read a datablock from a sector 
+            </summary>
+            <param name="sector">sector to read</param>
+            <param name="datablock">datablock to read</param>
+            <returns>true on success, false otherwise</returns>
+        </member>
+        <member name="M:MiFare.Classic.ICardReader.Write(System.Int32,System.Int32,System.Byte[])">
+            <summary>
+            write data in a datablock
+            </summary>
+            <param name="sector">sector to write</param>
+            <param name="datablock">datablock to write</param>
+            <param name="data">data to write. this is a 16-bytes array</param>
+            <returns>true on success, false otherwise</returns>
+        </member>
+        <member name="M:MiFare.Classic.ICardReader.GetUid">
+            <summary>
+            Returns the Card UID
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MiFare.Classic.MAD">
+            <summary>
+            handle the MiFare application directory
+            </summary>
+        </member>
+        <member name="M:MiFare.Classic.MAD.GetAppSectors(System.Int32)">
+            <summary>
+            return the list of sectors reserved for the given application id
+            </summary>
+            <param name="appId">application id to look for</param>
+            <returns>the indexes of the sectors reserved for the application</returns>
+        </member>
+        <member name="M:MiFare.Classic.MAD.AddAppId(System.Int32)">
+            <summary>
+            reserver a new sector for the application
+            </summary>
+            <param name="appId">id of the application</param>
+            <returns>the index of the reserved sector or -1 if no sectors available</returns>
+        </member>
+        <member name="T:MiFare.Classic.MAD2">
+            <summary>
+            handle the MiFare application directory
+            </summary>
+        </member>
+        <member name="M:MiFare.Classic.MAD2.GetAppSectors(System.Int32)">
+            <summary>
+            return the list of sectors reserved for the given application id
+            </summary>
+            <param name="appId">application id to look for</param>
+            <returns>the indexes of the sectors reserved for the application</returns>
+        </member>
+        <member name="M:MiFare.Classic.MAD2.AddAppId(System.Int32)">
+            <summary>
+            reserver a new sector for the application
+            </summary>
+            <param name="appId">id of the application</param>
+            <returns>the index of the reserved sector or -1 if no sectors available</returns>
+        </member>
+        <member name="T:MiFare.Classic.MiFareCard">
+            <summary>
+                Helper for MiFare card handling
+            </summary>
+        </member>
+        <member name="P:MiFare.Classic.MiFareCard.ActiveSector">
+            <summary>
+                the sector actually active (logged in)
+            </summary>
+        </member>
+        <member name="P:MiFare.Classic.MiFareCard.Reader">
+            <summary>
+                allows access to the ICardReader interface from Sector objects
+            </summary>
+        </member>
+        <member name="M:MiFare.Classic.MiFareCard.GetSector(System.Int32)">
+            <summary>
+                returns the Sector object at given position
+            </summary>
+            <param name="sector">index of the sector (0..39)</param>
+            <returns>the sector object</returns>
+            <remarks>may throw CardLoginException or CardReadException</remarks>
+        </member>
+        <member name="M:MiFare.Classic.MiFareCard.GetAppSectors(System.Int32)">
+            <summary>
+                return the list of sectors associated to the given applicaition id
+            </summary>
+            <param name="appId">id of the application</param>
+            <returns>list of sectors reserved to the application</returns>
+            <remarks>may throw CardLoginException and CardReadException</remarks>
+        </member>
+        <member name="M:MiFare.Classic.MiFareCard.AddAppId(System.Int32,MiFare.Classic.MiFareCard.ApplicationMad)">
+            <summary>
+                reserve a new sector to the application. look for free sector in the given MAD
+            </summary>
+            <param name="appId">id of the application</param>
+            <param name="whichMad">
+                MAD that will be scanned
+                Any = scan MAD and MAD2 if available
+                MAD = scan MAD only
+                MAD2 = scan MAD2 only
+            </param>
+            <returns>index of the reserved sector or -1 if no sectors found</returns>
+            <remarks>may throw CardLoginException and CardReadException</remarks>
+        </member>
+        <member name="M:MiFare.Classic.MiFareCard.GetData(System.Int32,System.Int32,System.Int32)">
+            <summary>
+                read a block of data of any size
+            </summary>
+            <param name="sector">index of the sector</param>
+            <param name="dataBlock">index of the datablock</param>
+            <param name="length">n umber of bytes to read</param>
+            <returns>the data read</returns>
+            <remarks>may throw CardLoginException and CardReadException</remarks>
+        </member>
+        <member name="M:MiFare.Classic.MiFareCard.AddOrUpdateSectorKeySet(MiFare.Classic.SectorKeySet)">
+            <summary>
+            Add or Update a key for a sector
+            </summary>
+            <param name="keySet"></param>
+        </member>
+        <member name="M:MiFare.Classic.MiFareCard.GetUid">
+            <summary>
+                Wrapper method get the Mifare Standard ICC UID
+            </summary>
+            <returns>byte array UID</returns>
+        </member>
+        <member name="M:MiFare.Classic.MiFareCard.SetData(System.Int32,System.Int32,System.Byte[])">
+            <summary>
+                write data on card. data is stored internally, not actually written on card. use Flush to write changes on the card
+            </summary>
+            <param name="sector">index of the sector</param>
+            <param name="dataBlock">index of the datablock</param>
+            <param name="data">data to write</param>
+            <remarks>may throw CardLoginException and CardWriteException</remarks>
+        </member>
+        <member name="M:MiFare.Classic.MiFareCard.Abort">
+            <summary>
+                reinitialize the object
+            </summary>
+        </member>
+        <member name="M:MiFare.Classic.MiFareCard.Flush">
+            <summary>
+                write all changed datblock on the card
+            </summary>
+            <remarks>may throw CardLoginException and CardWriteException</remarks>
+        </member>
+        <member name="M:MiFare.Classic.MiFareStandardCardReaderBase.GetUid">
+            <summary>
+                Wrapper method get the Mifare Standard ICC UID
+            </summary>
+            <returns>byte array UID</returns>
+        </member>
+        <member name="P:MiFare.Classic.Sector.Access">
+            <summary>
+                Sector access conditions
+            </summary>
+        </member>
+        <member name="P:MiFare.Classic.Sector.DataLength">
+            <summary>
+                number of data bytes in the sector (trailer datablock is excluded)
+            </summary>
+        </member>
+        <member name="P:MiFare.Classic.Sector.KeyA">
+            <summary>
+                Key A for the sector. This needs to be set when setting the access conditions. Key could not be read from card
+            </summary>
+        </member>
+        <member name="P:MiFare.Classic.Sector.KeyB">
+            <summary>
+                Key B for the sector. This needs to be set when setting the access conditions. Key could not be read from card
+            </summary>
+        </member>
+        <member name="P:MiFare.Classic.Sector.NumDataBlocks">
+            <summary>
+                number of datablocks in the sector
+            </summary>
+        </member>
+        <member name="P:MiFare.Classic.Sector.TotalLength">
+            <summary>
+                number of bytes in the sector (including trailer datablock)
+            </summary>
+        </member>
+        <member name="M:MiFare.Classic.Sector.Flush">
+            <summary>
+                commit changes to card
+            </summary>
+            <remarks>may throw CardLoginException and CardWriteException</remarks>
+        </member>
+        <member name="M:MiFare.Classic.Sector.FlushTrailer(System.String,System.String)">
+            <summary>
+                commit changes made to trailer datablock
+            </summary>
+            <remarks>may throw CardLoginException and CardWriteException</remarks>
+        </member>
+        <member name="M:MiFare.Classic.Sector.GetData(System.Int32)">
+            <summary>
+                read data from a datablock
+            </summary>
+            <param name="block">index of the datablock</param>
+            <returns>data read (always 16 bytes)</returns>
+            <remarks>may throw CardLoginException and CardReadException</remarks>
+        </member>
+        <member name="M:MiFare.Classic.Sector.SetData(System.Byte[],System.Int32)">
+            <summary>
+                write data in the sector
+            </summary>
+            <param name="data">data to write</param>
+            <param name="firstBlock">the index of the block to start write</param>
+            <remarks>
+                may throw CardLoginException and CardWriteException.
+                if the length of the data to write overcomes the number of datablocks, the remaining data is not written
+            </remarks>
+        </member>
+        <member name="M:MiFare.Classic.FactoryMethods.CreateMiFareCard(MiFare.Devices.SmartCard,System.Collections.Generic.IList{MiFare.Classic.SectorKeySet})">
+            <summary>
+                Creates a MiFare card instance using the specified key
+            </summary>
+            <param name="card"></param>
+            <param name="keys"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MiFare.Classic.FactoryMethods.CreateMiFareCard(MiFare.Devices.SmartCard)">
+            <summary>
+                Creates a MiFare card instance using the factory default key for all sectors
+            </summary>
+            <param name="card"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MiFare.PcSc.AtrInfo.#ctor">
+            <summary>
+                Helper class that holds information about the ICC Answer-To-Reset (ATR) information such
+                as interface character and offset and length of the historical bytes. It also hold info
+                about the validity of the TCK byte.
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.AtrInfo.ProtocolInterfaceA">
+            <summary>
+                Protocol interface characters TAi
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.AtrInfo.ProtocolInterfaceB">
+            <summary>
+                Protocol interface characters TBi
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.AtrInfo.ProtocolInterfaceC">
+            <summary>
+                Protocol interface characters TCi
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.AtrInfo.ProtocolInterfaceD">
+            <summary>
+                Protocol interface characters TDi
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.AtrInfo.HistoricalBytes">
+            <summary>
+                Historical bytes if present
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.AtrInfo.TckValid">
+            <summary>
+                Check Byte valid
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.AtrParser">
+            <summary>
+                Helper class that parses the ATR and populate the AtrInfo class
+            </summary>
+        </member>
+        <member name="M:MiFare.PcSc.AtrParser.Parse(System.Byte[])">
+            <summary>
+                Main parser method that extract information about the ATR byte array
+            </summary>
+            <returns>
+                returns AtrInfo object if ATR is valid, null otherwise
+            </returns>
+        </member>
+        <member name="M:MiFare.PcSc.AtrParser.ValidateTCK(System.Byte[])">
+            <summary>
+                Compute the ATR check byte (TCK)
+            </summary>
+            <returns>
+                return the computed TCK
+            </returns>
+        </member>
+        <member name="T:MiFare.PcSc.ByteExtension">
+            <summary>
+                Extensions to the Byte primitive data type
+            </summary>
+        </member>
+        <member name="M:MiFare.PcSc.ByteExtension.HiNibble(System.Byte)">
+            <summary>
+                Extracts the high nibble of a byte
+            </summary>
+            <returns>
+                return byte represeting the high nibble of a byte
+            </returns>
+        </member>
+        <member name="M:MiFare.PcSc.ByteExtension.LowNibble(System.Byte)">
+            <summary>
+                Extracts the low nibble of a byte
+            </summary>
+            <returns>
+                return byte represeting the low nibble of a byte
+            </returns>
+        </member>
+        <member name="T:MiFare.PcSc.DeviceClass">
+            <summary>
+            ICC Device class
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.IccDetection">
+            <summary>
+                Class used to detect the type of the ICC card detected. It accept ATR bytes. 
+                After the ATR is parsed, the ICC Detection class inspects
+                the historical bytes in order to detect the ICC type as specified by PCSC specification.
+            </summary>
+        </member>
+        <member name="M:MiFare.PcSc.IccDetection.#ctor(System.Byte[])">
+            <summary>
+                class constructor.
+            </summary>
+            <param name="atrBytes">
+                Bytes from a STR request
+            </param>
+        </member>
+        <member name="P:MiFare.PcSc.IccDetection.PcscDeviceClass">
+            <summary>
+                PCSC device type
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.IccDetection.PcscCardName">
+            <summary>
+                PCSC card name provided in the nn short int
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.IccDetection.Atr">
+            <summary>
+                ATR byte array
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.IccDetection.AtrInformation">
+            <summary>
+                ATR info holds information about the interface character along other info
+            </summary>
+        </member>
+        <member name="M:MiFare.PcSc.IccDetection.DetectCardType">
+            <summary>
+                Detects the ICC type by parsing, and analyzing the ATR
+            </summary>
+            <returns>
+                none
+            </returns>
+        </member>
+        <member name="M:MiFare.PcSc.IccDetection.DetectCard">
+            <summary>
+                Internal method that analyzes the ATR Historical Bytes,
+                it populate the object with info about the ICC
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.IccDetection.CategoryIndicator">
+            <summary>
+                Helper enum to hold various constants
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.Iso7816.ApduCommand">
+            <summary>
+            Class ApduCommand implments the ISO 7816 apdu commands
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduCommand.CLA">
+            <summary>
+            Class of instructions
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduCommand.INS">
+            <summary>
+            Instruction code
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduCommand.P1">
+            <summary>
+            Instruction parameter 1
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduCommand.P2">
+            <summary>
+            Instruction parameter 2
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduCommand.Le">
+            <summary>
+            Maximum number of bytes expected in the response ot this command
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduCommand.CommandData">
+            <summary>
+            Contiguous array of bytes representing commands data
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduCommand.ApduResponseType">
+            <summary>
+            Expected response type for this command.
+            Provides mechanism to bind commands to responses
+            </summary>
+        </member>
+        <member name="M:MiFare.PcSc.Iso7816.ApduCommand.GetBuffer">
+            <summary>
+            Packs the current command into contiguous buffer bytes
+            </summary>
+            <returns>
+            buffer holds the current wire/air format of the command
+            </returns>
+        </member>
+        <member name="M:MiFare.PcSc.Iso7816.ApduCommand.ToString">
+            <summary>
+            Helper method to print the command in a readable format
+            </summary>
+            <returns>
+            return string formatted command
+            </returns>
+        </member>
+        <member name="T:MiFare.PcSc.Iso7816.ApduResponse">
+            <summary>
+            Class ApduResponse implments handler for the ISO 7816 apdu response
+            </summary>
+        </member>
+        <member name="M:MiFare.PcSc.Iso7816.ApduResponse.#ctor">
+            <summary>
+            Class constructor
+            </summary>
+        </member>
+        <member name="M:MiFare.PcSc.Iso7816.ApduResponse.ExtractResponse(System.Byte[])">
+            <summary>
+            methode to extract the response data, status and qualifier
+            </summary>
+            <param name="response"></param>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduResponse.Succeeded">
+            <summary>
+            Detects if the command has succeeded
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduResponse.SW1">
+            <summary>
+            command processing status
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduResponse.SW2">
+            <summary>
+            command processing qualifier
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduResponse.SW">
+            <summary>
+            Wrapper property to read both response status and qualifer
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduResponse.ResponseData">
+            <summary>
+            Response data
+            </summary>
+        </member>
+        <member name="P:MiFare.PcSc.Iso7816.ApduResponse.SWTranslation">
+            <summary>
+            Mapping response status and qualifer to human readable format
+            </summary>
+        </member>
+        <member name="M:MiFare.PcSc.Iso7816.ApduResponse.ToString">
+            <summary>
+            Helper method to print the response in a readable format
+            </summary>
+            <returns>
+            return string formatted response
+            </returns>
+        </member>
+        <member name="T:MiFare.PcSc.Iso7816.SelectCommand">
+            <summary>
+            Class that implements select command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.Iso7816.Cla">
+            <summary>
+            Enumeration of possible ISO 7816 Command 
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.Iso7816.ClaXx">
+            <summary>
+            Enumeration of lower nibbile of CLA 
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.Iso7816.Ins">
+            <summary>
+            Enumeration of possible instructions 
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.MiFareStandard.Read">
+            <summary>
+            Mifare Standard Read commad when sent to the card the card is expected to return 16 bytes
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.MiFareStandard.Write">
+            <summary>
+            Mifare Standard Write commad when sent to the card, writes 16 bytes at a time
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.MiFareStandard.GetUid">
+            <summary>
+            Mifare Standard GetUid command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.MiFareStandard.GetHistoricalBytes">
+            <summary>
+            Mifare Standard GetHistoricalBytes command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.MiFareStandard.LoadKey">
+            <summary>
+            Mifare Standard Load Keys commad which stores the supplied key into the specified numbered key slot
+            for subsequent use by the General Authenticate command.
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.MiFareStandard.GeneralAuthenticate">
+            <summary>
+            Mifare Standard GetHistoricalBytes command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.MiFareStandard.ApduResponse">
+            <summary>
+            Mifare response APDU
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.GetData">
+            <summary>
+            PCSC GetData command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.LoadKeys">
+            <summary>
+            PCSC LoadKeys command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.GeneralAuthenticate">
+            <summary>
+            PCSC GeneralAuthenticate command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.ReadBinary">
+            <summary>
+            PCSC ReadBinary command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.UpdateBinary">
+            <summary>
+            PCSC Updatebinary Command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.GetUid">
+            <summary>
+            PCSC GetUid command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.GetHistoricalBytes">
+            <summary>
+            PCSC GetHistoricalBytes command
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.ApduResponse">
+            <summary>
+            PCSC Apdu response
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.StorageStandard">
+            <summary>
+            PCSC storage standard enum (ss byte)
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.CardName">
+            <summary>
+            PCSC card name enum (nn short)
+            </summary>
+        </member>
+        <member name="T:MiFare.PcSc.Ins">
+            <summary>
+            Enumeration of possible instructions 
+            </summary>
+        </member>
+        <member name="M:MiFare.PcSc.SmartCardConnectionExtension.TransceiveAsync(MiFare.Devices.SmartCardConnection,MiFare.PcSc.Iso7816.ApduCommand)">
+            <summary>
+                Extension method to SmartCardConnection class similar to Transmit asyc method, however it accepts PCSC SDK
+                commands.
+            </summary>
+            <param name="apduCommand">
+                APDU command object to send to the ICC
+            </param>
+            <param name="connection">
+                SmartCardConnection object
+            </param>
+            <returns>APDU response object of type defined by the APDU command object</returns>
+        </member>
+        <member name="M:MiFare.CardReader.FindAsync(System.String)">
+            <summary>
+            If none is supplied, this method will try to find the best reader to use. 
+            If a single one exists, it'll use that, otherwise it'll look for one with
+            CL in the name for "contactless".
+            </summary>
+            <param name="readerName"></param>
+            <returns>SmartCardReader or null if not found</returns>
+        </member>
+        <member name="F:MiFare.Win32.Constants.SCARD_SCOPE_USER">
+            <summary>
+            The context is a user context, and any
+            database operations are performed within the
+            domain of the user.
+            </summary>
+        </member>
+        <member name="F:MiFare.Win32.Constants.SCARD_SCOPE_TERMINAL">
+            <summary>
+            The context is that of the current terminal,
+            and any database operations are performed
+            within the domain of that terminal.  (The
+            calling application must have appropriate
+            access permissions for any database actions.)
+            </summary>
+        </member>
+        <member name="F:MiFare.Win32.Constants.SCARD_SCOPE_SYSTEM">
+            <summary>
+            The context is the system context, and any
+            database operations are performed within the
+            domain of the system.  (The calling
+            application must have appropriate access
+            permissions for any database actions.)
+            </summary>
+        </member>
+        <member name="T:MiFare.Win32.SCARD_READERSTATE">
+            <summary>
+            Reader State
+            </summary>
+        </member>
+        <member name="T:MiFare.Win32.SCARD_IO_REQUEST">
+            <summary>
+             IO Request Control
+            </summary>
+        </member>
+    </members>
+</doc>
